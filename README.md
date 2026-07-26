@@ -1,0 +1,1 @@
+# To show only the libraries we installedpip list --not-required
