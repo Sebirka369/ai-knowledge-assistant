@@ -5,7 +5,13 @@ from fastapi import UploadFile
 from sqlalchemy.orm import Session
 
 from app.models.document import Document
+from app.models.document_chunk import DocumentChunk
+
 from app.repositories.document_repository import DocumentRepository
+from app.repositories.chunk_repository import ChunkRepository
+
+from app.services.document_processor import DocumentProcessor
+from app.services.chunking_service import ChunkingService
 
 
 UPLOAD_DIR = Path("storage/documents")
@@ -17,7 +23,11 @@ class DocumentService:
         self,
         db: Session,
     ):
-        self.repository = DocumentRepository(db)
+        self.document_repository = DocumentRepository(db)
+        self.chunk_repository = ChunkRepository(db)
+
+        self.processor = DocumentProcessor()
+        self.chunker = ChunkingService()
 
 
     def upload_document(
@@ -39,8 +49,39 @@ class DocumentService:
         document = Document(
             filename=file.filename,
             file_path=str(file_path),
-            status="uploaded",
+            status="processing",
         )
 
 
-        return self.repository.create(document)
+        document = self.document_repository.create(document)
+
+
+        text = self.processor.extract_text(
+            str(file_path)
+        )
+
+
+        chunks = self.chunker.split_text(text)
+
+
+        chunk_models = []
+
+        for index, chunk in enumerate(chunks):
+
+            chunk_model = DocumentChunk(
+                document_id=document.id,
+                content=chunk,
+                chunk_index=index,
+            )
+
+            chunk_models.append(chunk_model)
+
+
+        self.chunk_repository.create_many(
+            chunk_models
+        )
+
+
+        document.status = "processed"
+
+        return document

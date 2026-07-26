@@ -1,13 +1,20 @@
-from pathlib import Path
+import fitz  # PyMuPDF
 
 
 class DocumentProcessor:
 
     def extract_text(self, file_path: str) -> str:
         """
-        Extract text from document.
+        Extract text from PDF file.
         """
 
-        path = Path(file_path)
+        document = fitz.open(file_path)
 
-        return path.read_text()
+        text = ""
+
+        for page in document:
+            text += page.get_text()
+
+        document.close()
+
+        return text
