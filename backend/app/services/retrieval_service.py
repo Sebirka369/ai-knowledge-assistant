@@ -19,6 +19,7 @@ class RetrievalService:
         self,
         question: str,
         limit: int = 5,
+        document_id: int | None = None,
     ) -> list[dict]:
 
         query_embedding = self.embedder.create_embedding(question)
@@ -26,6 +27,7 @@ class RetrievalService:
         results = self.vector_store.search(
             query_embedding=query_embedding,
             limit=limit,
+            document_id=document_id,
         )
 
         hits = results[0]
@@ -40,6 +42,7 @@ class RetrievalService:
 
         for hit in hits:
             chunk_id = int(hit["entity"]["chunk_id"])
+
             chunk = chunks_by_id.get(chunk_id)
 
             if chunk is None:

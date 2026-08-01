@@ -1,6 +1,5 @@
 from app.services.llm_service import LLMService
 
-
 service = LLMService()
 
 question = "What is Python?"

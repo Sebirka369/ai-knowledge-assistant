@@ -1,14 +1,11 @@
 from app.services.embedding_service import EmbeddingService
 from app.vector_store.milvus import MilvusStore
 
-
 question = "What is this document about?"
 
 embedder = EmbeddingService()
 
-query_embedding = embedder.create_embedding(
-    question
-)
+query_embedding = embedder.create_embedding(question)
 
 store = MilvusStore()
 

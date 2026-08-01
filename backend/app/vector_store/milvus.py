@@ -110,12 +110,19 @@ class MilvusStore:
         self,
         query_embedding: list[float],
         limit: int = 5,
+        document_id: int | None = None,
     ):
+        filter_expression = None
+
+        if document_id is not None:
+            filter_expression = f'document_id == "{document_id}"'
+
         results = self.client.search(
             collection_name=self.COLLECTION_NAME,
             data=[query_embedding],
             anns_field="embedding",
             limit=limit,
+            filter=filter_expression,
             search_params={
                 "metric_type": "COSINE",
             },

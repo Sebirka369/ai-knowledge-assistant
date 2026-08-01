@@ -1,7 +1,6 @@
 from app.database.session import SessionLocal
 from app.services.rag_service import RAGService
 
-
 db = SessionLocal()
 
 try:

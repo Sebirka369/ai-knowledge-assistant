@@ -26,12 +26,11 @@ class RAGService:
             limit=limit,
         )
 
-        context = "\n\n".join(
-            chunk["content"]
-            for chunk in chunks
-        )
+        context = "\n\n".join(chunk["content"] for chunk in chunks)
 
-        return self.llm_service.generate(
+        answer = self.llm_service.generate(
             question=question,
             context=context,
         )
+
+        return answer
