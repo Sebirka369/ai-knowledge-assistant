@@ -10,14 +10,10 @@ class MilvusStore:
         self,
         uri: str = "http://localhost:19530",
     ):
-        self.client = MilvusClient(
-            uri=uri
-        )
+        self.client = MilvusClient(uri=uri)
 
     def create_collection(self):
-        if self.client.has_collection(
-            collection_name=self.COLLECTION_NAME
-        ):
+        if self.client.has_collection(collection_name=self.COLLECTION_NAME):
             return
 
         schema = self.client.create_schema(
@@ -60,12 +56,8 @@ class MilvusStore:
         )
 
     def drop_collection(self):
-        if self.client.has_collection(
-            collection_name=self.COLLECTION_NAME
-        ):
-            self.client.drop_collection(
-                collection_name=self.COLLECTION_NAME
-            )
+        if self.client.has_collection(collection_name=self.COLLECTION_NAME):
+            self.client.drop_collection(collection_name=self.COLLECTION_NAME)
 
     def create_index(self):
         index_params = self.client.prepare_index_params()
@@ -82,9 +74,8 @@ class MilvusStore:
         )
 
     def load_collection(self):
-        self.client.load_collection(
-            collection_name=self.COLLECTION_NAME
-        )
+        self.client.load_collection(collection_name=self.COLLECTION_NAME)
+
     def delete_by_chunk_id(
         self,
         chunk_id: str,
@@ -93,6 +84,7 @@ class MilvusStore:
             collection_name=self.COLLECTION_NAME,
             filter=f'chunk_id == "{chunk_id}"',
         )
+
     def insert_chunk(
         self,
         chunk_id: str,

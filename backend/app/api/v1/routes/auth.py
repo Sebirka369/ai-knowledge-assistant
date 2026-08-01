@@ -4,7 +4,6 @@ from app.schemas.user import UserCreate, UserResponse
 from app.services.auth_service import AuthService
 from app.dependencies.services import get_auth_service
 
-
 router = APIRouter(
     prefix="/auth",
     tags=["Authentication"],

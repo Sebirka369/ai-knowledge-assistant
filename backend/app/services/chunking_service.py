@@ -1,10 +1,7 @@
 class ChunkingService:
 
     def split_text(
-        self,
-        text: str,
-        chunk_size: int = 1000,
-        overlap: int = 200
+        self, text: str, chunk_size: int = 1000, overlap: int = 200
     ) -> list[str]:
 
         chunks = []

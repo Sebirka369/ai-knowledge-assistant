@@ -16,7 +16,6 @@ from app.services.embedding_service import EmbeddingService
 
 from app.vector_store.milvus import MilvusStore
 
-
 UPLOAD_DIR = Path("storage/documents")
 
 
@@ -57,17 +56,11 @@ class DocumentService:
             status="processing",
         )
 
-        document = self.document_repository.create(
-            document
-        )
+        document = self.document_repository.create(document)
 
-        text = self.processor.extract_text(
-            str(file_path)
-        )
+        text = self.processor.extract_text(str(file_path))
 
-        chunks = self.chunker.split_text(
-            text
-        )
+        chunks = self.chunker.split_text(text)
 
         chunk_models = []
 
@@ -79,19 +72,13 @@ class DocumentService:
                 chunk_index=index,
             )
 
-            chunk_models.append(
-                chunk_model
-            )
+            chunk_models.append(chunk_model)
 
-        saved_chunks = self.chunk_repository.create_many(
-            chunk_models
-        )
+        saved_chunks = self.chunk_repository.create_many(chunk_models)
 
         for chunk_model in saved_chunks:
 
-            embedding = self.embedder.create_embedding(
-                chunk_model.content
-            )
+            embedding = self.embedder.create_embedding(chunk_model.content)
 
             self.milvus.insert_chunk(
                 chunk_id=str(chunk_model.id),
