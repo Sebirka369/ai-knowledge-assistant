@@ -1,12 +1,13 @@
 from app.database.session import SessionLocal
 from app.services.retrieval_service import RetrievalService
 
+
 db = SessionLocal()
 
 try:
     service = RetrievalService(db)
 
-    question = "What is this document about?"
+    question = "What is the goal of this roadmap?"
 
     results = service.retrieve(
         question=question,
@@ -16,15 +17,14 @@ try:
 
     print(f"Question: {question}")
     print("Document ID: 4")
-    print()
+    print("=" * 80)
 
     for result in results:
-        print("Chunk ID:", result["chunk_id"])
-        print("Document ID:", result["document_id"])
-        print("Chunk Index:", result["chunk_index"])
-        print("Distance:", result["distance"])
-        print("Content:")
-        print(result["content"])
+        print(f"Chunk ID: {result['chunk_id']}")
+        print(f"Document ID: {result['document_id']}")
+        print(f"Chunk Index: {result['chunk_index']}")
+        print(f"Distance: {result['distance']}")
+        print(f"Content: {result['content'][:200]}")
         print("=" * 80)
 
 finally:
