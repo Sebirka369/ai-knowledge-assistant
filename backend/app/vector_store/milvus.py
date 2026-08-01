@@ -85,7 +85,14 @@ class MilvusStore:
         self.client.load_collection(
             collection_name=self.COLLECTION_NAME
         )
-
+    def delete_by_chunk_id(
+        self,
+        chunk_id: str,
+    ):
+        return self.client.delete(
+            collection_name=self.COLLECTION_NAME,
+            filter=f'chunk_id == "{chunk_id}"',
+        )
     def insert_chunk(
         self,
         chunk_id: str,
@@ -106,3 +113,25 @@ class MilvusStore:
             collection_name=self.COLLECTION_NAME,
             data=data,
         )
+
+    def search(
+        self,
+        query_embedding: list[float],
+        limit: int = 5,
+    ):
+        results = self.client.search(
+            collection_name=self.COLLECTION_NAME,
+            data=[query_embedding],
+            anns_field="embedding",
+            limit=limit,
+            search_params={
+                "metric_type": "COSINE",
+            },
+            output_fields=[
+                "chunk_id",
+                "document_id",
+                "chunk_index",
+            ],
+        )
+
+        return results

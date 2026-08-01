@@ -1,24 +1,34 @@
+from app.services.embedding_service import EmbeddingService
 from app.vector_store.milvus import MilvusStore
 
 
-store = MilvusStore()
+question = "What is this document about?"
 
-store.create_index()
+embedder = EmbeddingService()
+
+query_embedding = embedder.create_embedding(
+    question
+)
+
+store = MilvusStore()
 
 store.load_collection()
 
-result = store.client.query(
-    collection_name=store.COLLECTION_NAME,
-    filter="",
-    output_fields=[
-        "chunk_id",
-        "document_id",
-        "chunk_index",
-    ],
-    limit=100,
+search_results = store.search(
+    query_embedding=query_embedding,
+    limit=5,
 )
 
-print(f"Number of vectors: {len(result)}")
+print(f"Question: {question}")
+print()
 
-for item in result:
-    print(item)
+for hits in search_results:
+    for hit in hits:
+        print(
+            {
+                "distance": hit["distance"],
+                "chunk_id": hit["entity"]["chunk_id"],
+                "document_id": hit["entity"]["document_id"],
+                "chunk_index": hit["entity"]["chunk_index"],
+            }
+        )
